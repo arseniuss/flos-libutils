@@ -97,8 +97,19 @@ setup_deps() {
                 echo "${name}_LIB=deps/$dir/lib" >> $config_file
             fi
         else
-            echo "# ${name}_INCLUDE=?" >> $config_file
-            echo "# ${name}_LIB=?" >> $config_file
+            include=$(eval echo "\${${name}_INCLUDE}")
+            if [ -z "$include" ]; then
+                echo "${name}_INCLUDE is not set" > /dev/stderr
+                exit 1
+            fi
+            echo "${name}_INCLUDE=$include" >> $config_file
+
+            lib=$(eval echo "\${${name}_LIB}")
+            if [ -z "$lib" ]; then
+                echo "${name}_LIB is not set" > /dev/stderr
+                exit 1
+            fi
+            echo "${name}_LIB=$lib" >> $config_file
         fi
     done  
 }
