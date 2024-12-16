@@ -1,15 +1,15 @@
 #!env make
 .POSIX:
 
-LIBS = \
+TARGETS = \
 	lib/libutils.a
 
 include config.mk
 
 .SUFFIXES:
-.PHONY: all tests clean $(LIBS)
+.PHONY: all tests clean
 
-all: $(LIBS)
+all: $(TARGETS)
 
 lib/libutils.a: libs.mk source/source.mk
 	$(MAKE) -f libs.mk SUBDIR=source
@@ -18,4 +18,4 @@ tests:
 	$(MAKE) -f libs.mk SUBDIR=source tests
 
 clean:
-	rm -rf bin lib $(builddir)
+	rm -rf bin deps lib $(builddir)
