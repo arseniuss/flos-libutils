@@ -7,6 +7,8 @@ progname="$0"
 
 . ./config.inc
 
+do_local_setup=0
+
 setvar() {
     local name="$1"
     local defval="$2"
@@ -68,14 +70,10 @@ setup_local() {
         fi
 
         make_local "deps/$dir/"
-
-        if [ -d deps/$dir/include ]; then
-            INCLUDES="$INCLUDES deps/$dir/include"
-        fi
     done
 }
 
-include_local() {
+setup_deps() {
     local config_file="$1"
 
     DEPLIBS_COUNT=$(echo "$DEPLIBS" | wc -w)
@@ -85,16 +83,22 @@ include_local() {
         i=$(( i + 1 ))
 
         name=$(echo "$DEPLIBS" | cut -d\  -f$i)
-        dir=$(eval echo \"\$${name}_DIR\")
 
-        [ -z "$dir" ] && continue;
+        if [ "$do_local_setup" -eq 1 ]; then
+            dir=$(eval echo \"\$${name}_DIR\")
 
-        if [ -d deps/$dir/include ]; then
-            echo "${name}_INCLUDE=deps/$dir/include" >> $config_file
-        fi
+            [ -z "$dir" ] && continue;
 
-        if [ -d deps/$dir/lib ]; then
-            echo "${name}_LIB=deps/$dir/lib" >> $config_file
+            if [ -d deps/$dir/include ]; then
+                echo "${name}_INCLUDE=deps/$dir/include" >> $config_file
+            fi
+
+            if [ -d deps/$dir/lib ]; then
+                echo "${name}_LIB=deps/$dir/lib" >> $config_file
+            fi
+        else
+            echo "# ${name}_INCLUDE=?" >> $config_file
+            echo "# ${name}_LIB=?" >> $config_file
         fi
     done  
 }
@@ -200,9 +204,7 @@ LIBS = $LIBS
 
 EOF
 
-if [ "$do_local_setup" -eq 1 ]; then
-    include_local "$srcdir/config.mk"
-fi
+setup_deps "$srcdir/config.mk"
 
 cat<<EOF >> $srcdir/config.mk
 
