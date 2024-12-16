@@ -6,7 +6,8 @@ LIBS = \
 
 include config.mk
 
-.PHONY: all tests clean
+.SUFFIXES:
+.PHONY: all tests clean $(LIBS)
 
 all: $(LIBS)
 
@@ -17,4 +18,4 @@ tests:
 	$(MAKE) -f libs.mk SUBDIR=source tests
 
 clean:
-	rm -rf bin lib $(BUILDDIR)
+	rm -rf bin lib $(builddir)

@@ -15,10 +15,10 @@ include config.mk
 #
 include $(SUBDIR)/source.mk
 
-OBJS != echo $(SRCS:.c=.o) | sed -e 's/$(SUBDIR)\//$(BUILDDIR)\/$(SUBDIR)\//g'
-DEPS != echo $(SRCS:.c=.d) | sed -e 's/$(SUBDIR)\//$(BUILDDIR)\/$(SUBDIR)\//g'
-PPS != echo $(SRCS:.c=.c.pp) | sed -e 's/$(SUBDIR)\//$(BUILDDIR)\/$(SUBDIR)\//g'
-TESTS != echo $(TESTSRCS:.c=) | sed -e 's/tests\//$(BUILDDIR)\//g'
+OBJS != echo $(SRCS:.c=.o) | sed -e 's/$(SUBDIR)\//$(builddir)\/$(SUBDIR)\//g'
+DEPS != echo $(SRCS:.c=.d) | sed -e 's/$(SUBDIR)\//$(builddir)\/$(SUBDIR)\//g'
+PPS != echo $(SRCS:.c=.c.pp) | sed -e 's/$(SUBDIR)\//$(builddir)\/$(SUBDIR)\//g'
+TESTS != echo $(TESTSRCS:.c=) | sed -e 's/tests\//$(builddir)\//g'
 
 .SUFFIXES:
 .PHONY: all tests clean
@@ -30,20 +30,20 @@ $(LIB): $(OBJS)
 	rm -f $@
 	$(AR) -rcs $@ $^
 
-$(BUILDDIR)/%.o: %.c
+$(builddir)/%.o: %.c
 	@mkdir -p $(@D)
-	$(PP) $(CFLAGS) $< > $(BUILDDIR)/$*.c.pp
-	$(CC) $(CFLAGS) -MMD -MF $(BUILDDIR)/$*.d -c -o $@ $<
+	$(PP) $(CFLAGS) $< > $(builddir)/$*.c.pp
+	$(CC) $(CFLAGS) -MMD -MF $(builddir)/$*.d -c -o $@ $<
 
 tests: $(TESTS) $(LIB)
 	$(PROVE) $(PROVE_FLAGS) $(TESTS)
 
-$(BUILDDIR)/%: tests/%.c $(LIB)
-	@mkdir -p $(BUILDDIR)/$(*D)
-	$(PP) $(CFLAGS) $< > $(BUILDDIR)/$*.c.pp
-	$(CC) $(CFLAGS) -MMD -MF $(BUILDDIR)/$*.d -o $@ $^
+$(builddir)/%: tests/%.c $(LIB)
+	@mkdir -p $(builddir)/$(*D)
+	$(PP) $(CFLAGS) $< > $(builddir)/$*.c.pp
+	$(CC) $(CFLAGS) -MMD -MF $(builddir)/$*.d -o $@ $^
 
 clean:
-	rm -rf $(BUILDDIR)/$(SUBDIR) $(LIB) $(TESTS)
+	rm -rf $(builddir)/$(SUBDIR) $(LIB) $(TESTS)
 
 -include $(DEPS)
