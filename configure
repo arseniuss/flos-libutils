@@ -133,7 +133,7 @@ collect_local() {
             ok
         fi
 
-        WITH_DEPLIBS="$WITH_DEPLIBS --with-$name=../deps/$dir/"
+        WITH_DEPLIBS="$WITH_DEPLIBS --with-$name=../$dir/"
     done
 }
 
