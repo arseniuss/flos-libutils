@@ -193,6 +193,7 @@ setup_deps() {
         else
             if [ ! -z $(eval echo \${with_$name+x}) ]; then
                 base=$(eval echo \${with_$name})
+                base=$(dirname $base)
 
                 if [ -d $base/include ]; then
                    addvar "${name}_INCLUDE" "$base/include"
