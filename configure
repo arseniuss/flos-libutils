@@ -260,9 +260,9 @@ while [ $# -gt 0 ]; do
         ;;
     --with-*=*)
         library=${1%=*}
-        library=${with#--with-}
+        library=${library#--with-}
         dir=${1#*=}
-        eval with_$with=\"$dir\"
+        eval with_$library=\"$dir\"
         echo Provided $library at location $dir 1>&2
         ;;
     --*|-*)
