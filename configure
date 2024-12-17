@@ -263,6 +263,7 @@ while [ $# -gt 0 ]; do
         library=${with#--with-}
         dir=${1#*=}
         eval with_$with=\"$dir\"
+        echo Provided $library at location $dir 1>&2
         ;;
     --*|-*)
         printf "%s: illegal option: %s\n" "$progname" "$1"
